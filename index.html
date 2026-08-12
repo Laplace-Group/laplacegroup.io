@@ -24,7 +24,9 @@
       <header class="site-header">
         <nav class="header-actions" aria-label="Primary navigation">
           <button class="outline-action mode-toggle" type="button" data-ntd-toggle aria-pressed="false">
-            <span class="ntd-label">NT-D</span>
+            <span class="ntd-label">
+              NT-D<span class="ntd-state" aria-hidden="true">&nbsp;· Engaged</span>
+            </span>
           </button>
         </nav>
       </header>
@@ -33,7 +35,7 @@
         <section class="hero-copy" aria-labelledby="hero-title">
           <h1 id="hero-title">Laplace Group</h1>
 
-          <a class="primary-action" href="mailto:hello@laplaceplace.io">Contact</a>
+          <a class="primary-action" href="mailto:hello@laplacegroup.io">Contact</a>
         </section>
 
         <section class="orrery" aria-label="Laplace orbital diagram">
@@ -63,12 +65,10 @@
     <script>
       (() => {
         const toggles = document.querySelectorAll('[data-ntd-toggle]');
-        const label = document.querySelector('.ntd-label');
 
         const setMode = (engaged) => {
           document.body.dataset.mode = engaged ? 'ntd' : 'unicorn';
           toggles.forEach((toggle) => toggle.setAttribute('aria-pressed', String(engaged)));
-          label.textContent = engaged ? 'NT-D · Engaged' : 'NT-D';
         };
 
         toggles.forEach((toggle) => {

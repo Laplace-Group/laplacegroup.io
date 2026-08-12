@@ -143,6 +143,28 @@ a {
   color: var(--accent);
 }
 
+.ntd-label {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.ntd-state {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateX(-5px);
+  transition: max-width 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 180ms ease,
+    transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mode-toggle[aria-pressed="true"] .ntd-state {
+  max-width: 9em;
+  opacity: 1;
+  transform: translateX(0);
+}
+
 .landing-main {
   width: 100%;
   flex: 1;
@@ -460,12 +482,8 @@ button:focus-visible {
   }
 
   .mode-toggle {
-    width: 54px;
+    min-width: 54px;
     overflow: hidden;
-  }
-
-  .ntd-label {
-    white-space: nowrap;
   }
 
   .landing-main {
