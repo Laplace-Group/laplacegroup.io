@@ -5,7 +5,7 @@
   --muted: #61626b;
   --line: #d9dade;
   --chip: #eff0f3;
-  --accent: #c22f28;
+  --accent: #c4362f;
   --accent-2: #162b49;
   --gold: #c5a05b;
   --orbit-1: 90s;
@@ -99,35 +99,9 @@ a {
   min-height: 96px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 40px;
   padding: 28px 56px;
-}
-
-.brand-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-  color: var(--ink);
-  font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  line-height: 1;
-  text-decoration: none;
-  text-transform: uppercase;
-}
-
-.brand-block {
-  width: 18px;
-  height: 18px;
-  background: var(--accent);
-  flex: 0 0 auto;
-  transition: background-color 500ms ease, transform 300ms ease;
-}
-
-.brand-link:hover .brand-block {
-  transform: rotate(45deg);
 }
 
 .header-actions {
@@ -194,36 +168,6 @@ a {
   text-wrap: balance;
 }
 
-.quote-block {
-  max-width: 680px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 18px;
-}
-
-.accent-rule {
-  width: 56px;
-  height: 10px;
-  background: var(--accent);
-  transition: background-color 500ms ease, width 300ms ease;
-}
-
-.quote-block:hover .accent-rule {
-  width: 88px;
-}
-
-.quote-block blockquote {
-  margin: 0;
-  color: var(--muted);
-  font-size: clamp(18px, 1.35vw, 22px);
-  font-style: italic;
-  font-weight: 400;
-  line-height: 1.55;
-  text-wrap: pretty;
-}
-
-.quote-block cite,
 .annotation,
 .footer-code {
   color: var(--muted);
@@ -232,11 +176,6 @@ a {
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-}
-
-.quote-block cite {
-  font-size: 12px;
-  line-height: 1.55;
 }
 
 .primary-action {
@@ -333,16 +272,18 @@ a {
   animation: pulse var(--pulse) ease-in-out infinite;
 }
 
-.logo-core img {
-  width: min(100%, 270px);
-  height: auto;
+.triangle-mark {
+  width: min(42%, 96px);
+  aspect-ratio: 4 / 5;
   display: block;
+  background: var(--accent);
+  clip-path: polygon(50% 0, 72.5% 84%, 50% 100%, 27.5% 84%);
   filter: var(--logo-filter);
-  transition: filter 500ms ease, transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: background-color 500ms ease, filter 500ms ease, transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.logo-core:hover img,
-.logo-core:focus-visible img {
+.logo-core:hover .triangle-mark,
+.logo-core:focus-visible .triangle-mark {
   transform: scale(1.07);
 }
 
@@ -498,17 +439,6 @@ button:focus-visible {
     padding: 22px 20px;
   }
 
-  .brand-link {
-    gap: 10px;
-    font-size: 12px;
-    letter-spacing: 0.14em;
-  }
-
-  .brand-block {
-    width: 14px;
-    height: 14px;
-  }
-
   .header-actions {
     gap: 8px;
   }
@@ -540,14 +470,6 @@ button:focus-visible {
   .hero-copy h1 {
     font-size: clamp(44px, 14vw, 62px);
     line-height: 1.02;
-  }
-
-  .quote-block blockquote {
-    font-size: 17px;
-  }
-
-  .quote-block cite {
-    font-size: 10px;
   }
 
   .primary-action {
