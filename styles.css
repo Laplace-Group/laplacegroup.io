@@ -331,12 +331,12 @@ a {
 }
 
 .hex-mark {
-  width: min(70%, 180px);
+  width: min(63%, 162px);
   height: auto;
   display: block;
   color: var(--ink);
   overflow: visible;
-  transition: color 500ms ease, transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: color 500ms ease;
 }
 
 .hex-mark-frame {
@@ -344,17 +344,21 @@ a {
   stroke: currentColor;
   stroke-width: 18;
   stroke-linejoin: round;
+  transform-box: view-box;
+  transform-origin: 120px 120px;
   transition: fill 500ms ease, stroke 500ms ease;
 }
 
 .hex-mark-core {
   fill: var(--accent);
-  transition: fill 500ms ease;
+  transform-box: view-box;
+  transform-origin: 120px 120px;
+  transition: fill 500ms ease, transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.logo-core:hover .hex-mark,
-.logo-core:focus-visible .hex-mark {
-  transform: scale(1.07);
+.logo-core:hover .hex-mark-core,
+.logo-core:focus-visible .hex-mark-core {
+  transform: scale(1.12);
 }
 
 .annotation {

@@ -68,16 +68,39 @@
       (() => {
         const toggles = document.querySelectorAll('[data-ntd-toggle]');
         const engagedWord = document.querySelector('.ntd-decrypt');
+        const hexFrame = document.querySelector('.hex-mark-frame');
         const finalText = engagedWord.dataset.decrypt;
         const glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉ零壱弐参伍陸漆捌玖界無電脳0123456789∆∇Ξλψ';
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         let decryptFrame = 0;
-        let decryptRun = 0;
-        let modeTransitioning = false;
+        let decryptProgress = 0;
+        let decryptDirection = 0;
+        let previousFrameTime = 0;
+        let previousGlyphTime = 0;
+        let desiredEngaged = false;
+
+        const stagger = 39;
+        const scrambleTime = 215;
+        const tickRate = 21;
+        const decryptDuration = (finalText.length - 1) * stagger + scrambleTime;
+        const ringAnimation = hexFrame.animate(
+          [
+            { transform: 'rotate(0deg)' },
+            { transform: 'rotate(-360deg)' }
+          ],
+          {
+            duration: 720,
+            easing: 'ease-in-out',
+            fill: 'both'
+          }
+        );
+
+        ringAnimation.pause();
+        ringAnimation.currentTime = 0;
 
         const randomGlyph = () => glyphs[Math.floor(Math.random() * glyphs.length)];
 
-        const buildEngagedWord = (resolved = false) => {
+        const buildEngagedWord = () => {
           const fragment = document.createDocumentFragment();
           const characters = [];
 
@@ -85,8 +108,9 @@
             const characterElement = document.createElement('span');
             characterElement.className = 'ntd-decrypt-char';
             characterElement.dataset.character = character;
-            characterElement.dataset.resolved = String(resolved);
-            characterElement.textContent = resolved ? character : randomGlyph();
+            characterElement.dataset.phase = 'hidden';
+            characterElement.dataset.resolved = 'false';
+            characterElement.textContent = '';
             fragment.append(characterElement);
             characters.push(characterElement);
           });
@@ -95,151 +119,110 @@
           return characters;
         };
 
-        const decryptEngaged = (onComplete) => {
-          cancelAnimationFrame(decryptFrame);
-          decryptRun += 1;
-          const run = decryptRun;
+        const characters = buildEngagedWord();
 
-          if (reducedMotion.matches) {
-            engagedWord.textContent = finalText;
-            onComplete();
-            return;
-          }
+        const renderEngaged = (refreshGlyphs = false) => {
+          const elapsed = decryptProgress * decryptDuration;
 
-          const characters = buildEngagedWord();
-          const startTime = performance.now();
-          const stagger = 39;
-          const scrambleTime = 215;
-          const tickRate = 21;
-          let previousTick = 0;
+          characters.forEach((character, index) => {
+            const localTime = elapsed - index * stagger;
 
-          const animate = (now) => {
-            if (run !== decryptRun) return;
-            const finishTime = startTime + (characters.length - 1) * stagger + scrambleTime;
-
-            if (now >= finishTime) {
-              characters.forEach((character) => {
-                character.textContent = character.dataset.character;
-                character.dataset.resolved = 'true';
-              });
-              onComplete();
+            if (localTime <= 0) {
+              character.textContent = '';
+              character.dataset.phase = 'hidden';
+              character.dataset.resolved = 'false';
               return;
             }
 
-            if (now - previousTick >= tickRate) {
-              characters.forEach((character, index) => {
-                const localTime = now - startTime - index * stagger;
-
-                if (localTime < 0) {
-                  character.textContent = '';
-                  return;
-                }
-
-                if (localTime < scrambleTime) {
-                  character.textContent = randomGlyph();
-                  character.dataset.resolved = 'false';
-                  return;
-                }
-
-                character.textContent = character.dataset.character;
-                character.dataset.resolved = 'true';
-              });
-              previousTick = now;
+            if (localTime < scrambleTime) {
+              if (refreshGlyphs || character.dataset.phase !== 'scramble') {
+                character.textContent = randomGlyph();
+              }
+              character.dataset.phase = 'scramble';
+              character.dataset.resolved = 'false';
+              return;
             }
 
-            decryptFrame = requestAnimationFrame(animate);
-          };
-
-          decryptFrame = requestAnimationFrame(animate);
+            character.textContent = character.dataset.character;
+            character.dataset.phase = 'resolved';
+            character.dataset.resolved = 'true';
+          });
         };
 
-        const encryptEngaged = (onComplete) => {
-          cancelAnimationFrame(decryptFrame);
-          decryptRun += 1;
-          const run = decryptRun;
+        const animateEngaged = (now) => {
+          const delta = previousFrameTime ? now - previousFrameTime : 0;
+          previousFrameTime = now;
+          decryptProgress = Math.min(1, Math.max(0, decryptProgress + decryptDirection * delta / decryptDuration));
 
-          if (reducedMotion.matches) {
-            engagedWord.textContent = '';
-            onComplete();
+          const refreshGlyphs = now - previousGlyphTime >= tickRate;
+          renderEngaged(refreshGlyphs);
+          if (refreshGlyphs) previousGlyphTime = now;
+
+          if ((decryptDirection > 0 && decryptProgress >= 1) ||
+              (decryptDirection < 0 && decryptProgress <= 0)) {
+            decryptDirection = 0;
+
+            if (decryptProgress === 0 && !desiredEngaged) {
+              document.body.dataset.mode = 'unicorn';
+              setPressed(false);
+            }
             return;
           }
 
-          const characters = buildEngagedWord(true);
-          const startTime = performance.now();
-          const stagger = 39;
-          const scrambleTime = 215;
-          const tickRate = 21;
-          let previousTick = 0;
-
-          const animate = (now) => {
-            if (run !== decryptRun) return;
-            const finishTime = startTime + (characters.length - 1) * stagger + scrambleTime;
-
-            if (now >= finishTime) {
-              characters.forEach((character) => {
-                character.textContent = '';
-                character.dataset.resolved = 'false';
-              });
-              onComplete();
-              return;
-            }
-
-            if (now - previousTick >= tickRate) {
-              characters.forEach((character, index) => {
-                const reverseIndex = characters.length - 1 - index;
-                const localTime = now - startTime - reverseIndex * stagger;
-
-                if (localTime < 0) {
-                  character.textContent = character.dataset.character;
-                  character.dataset.resolved = 'true';
-                  return;
-                }
-
-                if (localTime < scrambleTime) {
-                  character.textContent = randomGlyph();
-                  character.dataset.resolved = 'false';
-                  return;
-                }
-
-                character.textContent = '';
-                character.dataset.resolved = 'false';
-              });
-              previousTick = now;
-            }
-
-            decryptFrame = requestAnimationFrame(animate);
-          };
-
-          decryptFrame = requestAnimationFrame(animate);
+          decryptFrame = requestAnimationFrame(animateEngaged);
         };
 
         const setPressed = (pressed) => {
           toggles.forEach((toggle) => toggle.setAttribute('aria-pressed', String(pressed)));
         };
 
+        const spinRing = (engaged) => {
+          if (reducedMotion.matches) {
+            ringAnimation.pause();
+            ringAnimation.currentTime = engaged ? ringAnimation.effect.getTiming().duration : 0;
+            return;
+          }
+
+          if (engaged) {
+            ringAnimation.play();
+          } else {
+            ringAnimation.reverse();
+          }
+        };
+
         const setMode = (engaged) => {
-          if (modeTransitioning) return;
-          modeTransitioning = true;
+          desiredEngaged = engaged;
+          spinRing(engaged);
+          cancelAnimationFrame(decryptFrame);
 
           if (engaged) {
             document.body.dataset.mode = 'ntd';
             setPressed(true);
-            decryptEngaged(() => {
-              modeTransitioning = false;
-            });
+            decryptDirection = 1;
           } else {
-            encryptEngaged(() => {
-              document.body.dataset.mode = 'unicorn';
+            if (reducedMotion.matches) {
+              decryptProgress = 0;
+              renderEngaged();
               setPressed(false);
-              engagedWord.textContent = finalText;
-              modeTransitioning = false;
-            });
+              document.body.dataset.mode = 'unicorn';
+              return;
+            }
+            decryptDirection = -1;
           }
+
+          if (reducedMotion.matches) {
+            decryptProgress = engaged ? 1 : 0;
+            renderEngaged();
+            return;
+          }
+
+          previousFrameTime = performance.now();
+          decryptFrame = requestAnimationFrame(animateEngaged);
         };
 
         toggles.forEach((toggle) => {
           toggle.addEventListener('click', () => {
-            setMode(document.body.dataset.mode !== 'ntd');
+            setMode(!desiredEngaged);
           });
         });
 
