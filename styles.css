@@ -164,6 +164,29 @@ a {
     transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+.ntd-decrypt {
+  display: inline-flex;
+}
+
+.ntd-decrypt-char {
+  min-width: 0.62em;
+  display: inline-block;
+  color: currentColor;
+  text-align: center;
+  text-shadow: 0 0 0.55em rgb(196 54 47 / 46%);
+  transform: translateY(0.08em);
+  transition: text-shadow 100ms ease, transform 110ms ease;
+}
+
+.ntd-decrypt-char:empty {
+  opacity: 0;
+}
+
+.ntd-decrypt-char[data-resolved="true"] {
+  text-shadow: none;
+  transform: translateY(0);
+}
+
 .mode-toggle[aria-pressed="true"] .ntd-state {
   max-width: 9em;
   opacity: 1;
@@ -197,35 +220,6 @@ a {
   letter-spacing: -0.025em;
   line-height: 1.02;
   text-wrap: balance;
-}
-
-.decrypt-word {
-  display: inline-block;
-  white-space: nowrap;
-}
-
-.decrypt-char {
-  min-width: 0.52em;
-  display: inline-block;
-  color: var(--accent);
-  font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-  font-weight: 600;
-  text-align: center;
-  text-shadow: 0 0 0.5em rgb(196 54 47 / 32%);
-  transform: translateY(0.08em);
-  transition: color 160ms ease, text-shadow 220ms ease, transform 220ms ease;
-}
-
-.decrypt-char:empty {
-  opacity: 0;
-}
-
-.decrypt-char[data-resolved="true"] {
-  color: var(--ink);
-  font-family: inherit;
-  font-weight: inherit;
-  text-shadow: none;
-  transform: translateY(0);
 }
 
 .annotation,

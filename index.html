@@ -25,7 +25,7 @@
         <nav class="header-actions" aria-label="Primary navigation">
           <button class="outline-action mode-toggle" type="button" data-ntd-toggle aria-pressed="false">
             <span class="ntd-label">
-              NT-D<span class="ntd-state" aria-hidden="true">&nbsp;· Engaged</span>
+              NT-D<span class="ntd-state" aria-hidden="true"><span class="ntd-separator">&nbsp;·&nbsp;</span><span class="ntd-decrypt" data-decrypt="Engaged">Engaged</span></span>
             </span>
           </button>
         </nav>
@@ -33,7 +33,7 @@
 
       <main class="landing-main">
         <section class="hero-copy" aria-labelledby="hero-title">
-          <h1 id="hero-title" data-decrypt="Laplace Group">Laplace Group</h1>
+          <h1 id="hero-title">Laplace Group</h1>
 
           <a class="primary-action" href="mailto:hello@laplacegroup.io">Contact</a>
         </section>
@@ -65,8 +65,8 @@
     <script>
       (() => {
         const toggles = document.querySelectorAll('[data-ntd-toggle]');
-        const headline = document.querySelector('[data-decrypt]');
-        const finalText = headline.dataset.decrypt;
+        const engagedWord = document.querySelector('.ntd-decrypt');
+        const finalText = engagedWord.dataset.decrypt;
         const glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉ0123456789∆∇Ξλψ';
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         let decryptFrame = 0;
@@ -74,49 +74,39 @@
 
         const randomGlyph = () => glyphs[Math.floor(Math.random() * glyphs.length)];
 
-        const buildHeadline = () => {
+        const buildEngagedWord = () => {
           const fragment = document.createDocumentFragment();
           const characters = [];
 
-          finalText.split(' ').forEach((word, wordIndex, words) => {
-            const wordElement = document.createElement('span');
-            wordElement.className = 'decrypt-word';
-            wordElement.setAttribute('aria-hidden', 'true');
-
-            [...word].forEach((character) => {
-              const characterElement = document.createElement('span');
-              characterElement.className = 'decrypt-char';
-              characterElement.dataset.character = character;
-              characterElement.dataset.resolved = 'false';
-              characterElement.textContent = randomGlyph();
-              wordElement.append(characterElement);
-              characters.push(characterElement);
-            });
-
-            fragment.append(wordElement);
-            if (wordIndex < words.length - 1) fragment.append(' ');
+          [...finalText].forEach((character) => {
+            const characterElement = document.createElement('span');
+            characterElement.className = 'ntd-decrypt-char';
+            characterElement.dataset.character = character;
+            characterElement.dataset.resolved = 'false';
+            characterElement.textContent = randomGlyph();
+            fragment.append(characterElement);
+            characters.push(characterElement);
           });
 
-          headline.setAttribute('aria-label', finalText);
-          headline.replaceChildren(fragment);
+          engagedWord.replaceChildren(fragment);
           return characters;
         };
 
-        const decryptHeadline = () => {
+        const decryptEngaged = () => {
           cancelAnimationFrame(decryptFrame);
           decryptRun += 1;
           const run = decryptRun;
 
           if (reducedMotion.matches) {
-            headline.textContent = finalText;
+            engagedWord.textContent = finalText;
             return;
           }
 
-          const characters = buildHeadline();
+          const characters = buildEngagedWord();
           const startTime = performance.now();
-          const stagger = 78;
-          const scrambleTime = 430;
-          const tickRate = 42;
+          const stagger = 39;
+          const scrambleTime = 215;
+          const tickRate = 21;
           let previousTick = 0;
 
           const animate = (now) => {
@@ -161,7 +151,14 @@
         const setMode = (engaged) => {
           document.body.dataset.mode = engaged ? 'ntd' : 'unicorn';
           toggles.forEach((toggle) => toggle.setAttribute('aria-pressed', String(engaged)));
-          decryptHeadline();
+
+          if (engaged) {
+            decryptEngaged();
+          } else {
+            cancelAnimationFrame(decryptFrame);
+            decryptRun += 1;
+            engagedWord.textContent = finalText;
+          }
         };
 
         toggles.forEach((toggle) => {
@@ -170,7 +167,6 @@
           });
         });
 
-        decryptHeadline();
       })();
     </script>
   </body>
