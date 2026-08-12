@@ -175,7 +175,7 @@ a {
   text-align: center;
   text-shadow: 0 0 0.55em rgb(196 54 47 / 46%);
   transform: translateY(0.08em);
-  transition: text-shadow 100ms ease, transform 110ms ease;
+  transition: opacity 80ms ease, text-shadow 125ms ease, transform 140ms ease;
 }
 
 .ntd-decrypt-char:empty {
