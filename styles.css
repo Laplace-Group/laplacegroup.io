@@ -166,12 +166,18 @@ a {
 
 .ntd-decrypt {
   display: inline-flex;
+  width: 5.04em;
+  flex: 0 0 5.04em;
+  overflow: hidden;
 }
 
 .ntd-decrypt-char {
-  min-width: 0.62em;
+  width: 0.72em;
+  min-width: 0.72em;
   display: inline-block;
+  flex: 0 0 0.72em;
   color: currentColor;
+  overflow: hidden;
   text-align: center;
   text-shadow: 0 0 0.55em rgb(196 54 47 / 46%);
   transform: translateY(0.08em);
