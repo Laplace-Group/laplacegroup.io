@@ -105,6 +105,9 @@ a {
 }
 
 .header-actions {
+  position: absolute;
+  top: 28px;
+  right: 56px;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -408,6 +411,11 @@ button:focus-visible {
     padding: 24px 28px;
   }
 
+  .header-actions {
+    top: 24px;
+    right: 28px;
+  }
+
   .landing-main {
     grid-template-columns: 1fr;
     justify-items: center;
@@ -440,6 +448,8 @@ button:focus-visible {
   }
 
   .header-actions {
+    top: 22px;
+    right: 20px;
     gap: 8px;
   }
 
