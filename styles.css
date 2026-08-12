@@ -199,6 +199,35 @@ a {
   text-wrap: balance;
 }
 
+.decrypt-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.decrypt-char {
+  min-width: 0.52em;
+  display: inline-block;
+  color: var(--accent);
+  font-family: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  font-weight: 600;
+  text-align: center;
+  text-shadow: 0 0 0.5em rgb(196 54 47 / 32%);
+  transform: translateY(0.08em);
+  transition: color 160ms ease, text-shadow 220ms ease, transform 220ms ease;
+}
+
+.decrypt-char:empty {
+  opacity: 0;
+}
+
+.decrypt-char[data-resolved="true"] {
+  color: var(--ink);
+  font-family: inherit;
+  font-weight: inherit;
+  text-shadow: none;
+  transform: translateY(0);
+}
+
 .annotation,
 .footer-code {
   color: var(--muted);

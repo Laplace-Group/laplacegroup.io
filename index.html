@@ -33,7 +33,7 @@
 
       <main class="landing-main">
         <section class="hero-copy" aria-labelledby="hero-title">
-          <h1 id="hero-title">Laplace Group</h1>
+          <h1 id="hero-title" data-decrypt="Laplace Group">Laplace Group</h1>
 
           <a class="primary-action" href="mailto:hello@laplacegroup.io">Contact</a>
         </section>
@@ -65,10 +65,103 @@
     <script>
       (() => {
         const toggles = document.querySelectorAll('[data-ntd-toggle]');
+        const headline = document.querySelector('[data-decrypt]');
+        const finalText = headline.dataset.decrypt;
+        const glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉ0123456789∆∇Ξλψ';
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        let decryptFrame = 0;
+        let decryptRun = 0;
+
+        const randomGlyph = () => glyphs[Math.floor(Math.random() * glyphs.length)];
+
+        const buildHeadline = () => {
+          const fragment = document.createDocumentFragment();
+          const characters = [];
+
+          finalText.split(' ').forEach((word, wordIndex, words) => {
+            const wordElement = document.createElement('span');
+            wordElement.className = 'decrypt-word';
+            wordElement.setAttribute('aria-hidden', 'true');
+
+            [...word].forEach((character) => {
+              const characterElement = document.createElement('span');
+              characterElement.className = 'decrypt-char';
+              characterElement.dataset.character = character;
+              characterElement.dataset.resolved = 'false';
+              characterElement.textContent = randomGlyph();
+              wordElement.append(characterElement);
+              characters.push(characterElement);
+            });
+
+            fragment.append(wordElement);
+            if (wordIndex < words.length - 1) fragment.append(' ');
+          });
+
+          headline.setAttribute('aria-label', finalText);
+          headline.replaceChildren(fragment);
+          return characters;
+        };
+
+        const decryptHeadline = () => {
+          cancelAnimationFrame(decryptFrame);
+          decryptRun += 1;
+          const run = decryptRun;
+
+          if (reducedMotion.matches) {
+            headline.textContent = finalText;
+            return;
+          }
+
+          const characters = buildHeadline();
+          const startTime = performance.now();
+          const stagger = 78;
+          const scrambleTime = 430;
+          const tickRate = 42;
+          let previousTick = 0;
+
+          const animate = (now) => {
+            if (run !== decryptRun) return;
+            const finishTime = startTime + (characters.length - 1) * stagger + scrambleTime;
+
+            if (now >= finishTime) {
+              characters.forEach((character) => {
+                character.textContent = character.dataset.character;
+                character.dataset.resolved = 'true';
+              });
+              return;
+            }
+
+            if (now - previousTick >= tickRate) {
+              characters.forEach((character, index) => {
+                const localTime = now - startTime - index * stagger;
+
+                if (localTime < 0) {
+                  character.textContent = '';
+                  return;
+                }
+
+                if (localTime < scrambleTime) {
+                  character.textContent = randomGlyph();
+                  character.dataset.resolved = 'false';
+                  return;
+                }
+
+                character.textContent = character.dataset.character;
+                character.dataset.resolved = 'true';
+              });
+              previousTick = now;
+            }
+
+            decryptFrame = requestAnimationFrame(animate);
+          };
+
+          decryptFrame = requestAnimationFrame(animate);
+        };
 
         const setMode = (engaged) => {
           document.body.dataset.mode = engaged ? 'ntd' : 'unicorn';
           toggles.forEach((toggle) => toggle.setAttribute('aria-pressed', String(engaged)));
+          decryptHeadline();
         };
 
         toggles.forEach((toggle) => {
@@ -76,6 +169,8 @@
             setMode(document.body.dataset.mode !== 'ntd');
           });
         });
+
+        decryptHeadline();
       })();
     </script>
   </body>
