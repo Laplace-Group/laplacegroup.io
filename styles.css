@@ -12,7 +12,6 @@
   --orbit-2: 64s;
   --orbit-3: 40s;
   --pulse: 5s;
-  --logo-filter: drop-shadow(0 0 12px rgb(197 160 91 / 22%));
 }
 
 * {
@@ -45,7 +44,6 @@ body[data-mode="ntd"] {
   --orbit-2: 6.5s;
   --orbit-3: 4s;
   --pulse: 1.6s;
-  --logo-filter: drop-shadow(0 0 26px rgb(226 59 49 / 38%));
 }
 
 a {
@@ -332,18 +330,30 @@ a {
   animation: pulse var(--pulse) ease-in-out infinite;
 }
 
-.triangle-mark {
-  width: min(42%, 96px);
-  aspect-ratio: 4 / 5;
+.hex-mark {
+  width: min(70%, 180px);
+  height: auto;
   display: block;
-  background: var(--accent);
-  clip-path: polygon(50% 0, 72.5% 84%, 50% 100%, 27.5% 84%);
-  filter: var(--logo-filter);
-  transition: background-color 500ms ease, filter 500ms ease, transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  color: var(--ink);
+  overflow: visible;
+  transition: color 500ms ease, transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.logo-core:hover .triangle-mark,
-.logo-core:focus-visible .triangle-mark {
+.hex-mark-frame {
+  fill: var(--bg);
+  stroke: currentColor;
+  stroke-width: 18;
+  stroke-linejoin: round;
+  transition: fill 500ms ease, stroke 500ms ease;
+}
+
+.hex-mark-core {
+  fill: var(--accent);
+  transition: fill 500ms ease;
+}
+
+.logo-core:hover .hex-mark,
+.logo-core:focus-visible .hex-mark {
   transform: scale(1.07);
 }
 
@@ -363,12 +373,6 @@ a {
   bottom: 6%;
   left: 0;
   font-size: 13px;
-}
-
-.annotation-side {
-  top: 50%;
-  right: -4%;
-  writing-mode: vertical-rl;
 }
 
 .site-footer {
@@ -547,10 +551,6 @@ button:focus-visible {
 
   .annotation {
     font-size: 9px;
-  }
-
-  .annotation-side {
-    right: -2%;
   }
 
   .site-footer {
