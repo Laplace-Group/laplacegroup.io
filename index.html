@@ -8,36 +8,100 @@
     <link rel="canonical" href="https://laplacegroup.io/">
     <link rel="stylesheet" href="/styles.css">
     <meta property="og:title" content="Laplace Group">
-    <meta property="og:description" content="Laplace Group.">
+    <meta property="og:description" content="The present is the cause of the future.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://laplacegroup.io/">
     <meta property="og:site_name" content="Laplace Group">
-    <meta property="og:image" content="https://laplacegroup.io/og.png">
-    <meta property="og:image:width" content="1730">
-    <meta property="og:image:height" content="909">
+    <meta property="og:image" content="https://laplacegroup.io/og-technical.png">
+    <meta property="og:image:width" content="1729">
+    <meta property="og:image:height" content="910">
     <meta property="og:image:alt" content="Laplace Group">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Laplace Group">
-    <meta name="twitter:description" content="Laplace Group.">
-    <meta name="twitter:image" content="https://laplacegroup.io/og.png">
+    <meta name="twitter:description" content="The present is the cause of the future.">
+    <meta name="twitter:image" content="https://laplacegroup.io/og-technical.png">
   </head>
-  <body>
+  <body class="landing-page" data-mode="unicorn">
     <div class="site-shell">
+      <div class="technical-grid" aria-hidden="true"></div>
+      <div class="grid-fade" aria-hidden="true"></div>
+
       <header class="site-header">
-        <a class="brand-link" href="/" aria-label="Laplace Group home">Laplace Group</a>
+        <a class="brand-link" href="/" aria-label="Laplace Group home">
+          <span class="brand-block" aria-hidden="true"></span>
+          <span>Laplace Group</span>
+        </a>
+
+        <nav class="header-actions" aria-label="Primary navigation">
+          <a class="outline-action" href="mailto:hello@laplacegroup.io">Contact</a>
+          <button class="outline-action mode-toggle" type="button" data-ntd-toggle aria-pressed="false">
+            <span class="ntd-label">NT-D</span>
+          </button>
+        </nav>
       </header>
 
       <main class="landing-main">
-        <div class="landing-wrap">
-          <h1>Laplace Group</h1>
-          <a class="contact-link" href="mailto:hello@laplacegroup.io">Contact</a>
-        </div>
+        <section class="hero-copy" aria-labelledby="hero-title">
+          <h1 id="hero-title">The present is the cause of the future.</h1>
+
+          <div class="quote-block">
+            <span class="accent-rule" aria-hidden="true"></span>
+            <blockquote>
+              “An intelligence which could comprehend all the forces by which
+              nature is animated—to it, nothing would be uncertain; the
+              future, as the past, would be present to its eyes.”
+            </blockquote>
+            <cite>
+              Pierre-Simon Laplace · Essai philosophique sur les probabilités · 1814
+            </cite>
+          </div>
+
+          <a class="primary-action" href="mailto:hello@laplacegroup.io">
+            hello@laplacegroup.io
+          </a>
+        </section>
+
+        <section class="orrery" aria-label="Laplace orbital diagram">
+          <div class="orbit orbit-outer" aria-hidden="true"><span></span></div>
+          <div class="orbit orbit-middle" aria-hidden="true"><span></span></div>
+          <div class="orbit orbit-inner" aria-hidden="true"><span></span></div>
+
+          <button class="logo-core" type="button" data-ntd-toggle aria-label="Toggle NT-D display mode" aria-pressed="false">
+            <img src="/Laplace_4.4_autotrace.svg" alt="Laplace Group">
+          </button>
+
+          <span class="annotation annotation-top">Mécanique céleste · 1799</span>
+          <span class="annotation annotation-equation">∇²V = 0</span>
+          <span class="annotation annotation-side">RX-0 · UC 0096</span>
+        </section>
       </main>
 
       <footer class="site-footer">
-        <a href="/privacy.html">Privacy policy</a>
-        <span>© 2026 Laplace Group. All rights reserved.</span>
+        <span>
+          © 2026 Laplace Group. All rights reserved. ·
+          <a href="/privacy.html">Privacy policy</a>
+        </span>
+        <span class="footer-code">AD 1814 — UC 0096</span>
       </footer>
     </div>
+
+    <script>
+      (() => {
+        const toggles = document.querySelectorAll('[data-ntd-toggle]');
+        const label = document.querySelector('.ntd-label');
+
+        const setMode = (engaged) => {
+          document.body.dataset.mode = engaged ? 'ntd' : 'unicorn';
+          toggles.forEach((toggle) => toggle.setAttribute('aria-pressed', String(engaged)));
+          label.textContent = engaged ? 'NT-D · Engaged' : 'NT-D';
+        };
+
+        toggles.forEach((toggle) => {
+          toggle.addEventListener('click', () => {
+            setMode(document.body.dataset.mode !== 'ntd');
+          });
+        });
+      })();
+    </script>
   </body>
 </html>
