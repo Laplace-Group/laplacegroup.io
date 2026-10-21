@@ -83,20 +83,26 @@
         const scrambleTime = 215;
         const tickRate = 21;
         const decryptDuration = (finalText.length - 1) * stagger + scrambleTime;
-        const ringAnimation = hexFrame.animate(
-          [
-            { transform: 'rotate(0deg)' },
-            { transform: 'rotate(-360deg)' }
-          ],
-          {
-            duration: 720,
-            easing: 'ease-in-out',
-            fill: 'both'
+        // Created on first toggle so the page paints with no animation running.
+        let ringAnimation = null;
+        const getRingAnimation = () => {
+          if (!ringAnimation && typeof hexFrame.animate === 'function') {
+            ringAnimation = hexFrame.animate(
+              [
+                { transform: 'rotate(0deg)' },
+                { transform: 'rotate(-360deg)' }
+              ],
+              {
+                duration: 720,
+                easing: 'ease-in-out',
+                fill: 'both'
+              }
+            );
+            ringAnimation.pause();
+            ringAnimation.currentTime = 0;
           }
-        );
-
-        ringAnimation.pause();
-        ringAnimation.currentTime = 0;
+          return ringAnimation;
+        };
 
         const randomGlyph = () => glyphs[Math.floor(Math.random() * glyphs.length)];
 
@@ -177,16 +183,19 @@
         };
 
         const spinRing = (engaged) => {
+          const ring = getRingAnimation();
+          if (!ring) return;
+
           if (reducedMotion.matches) {
-            ringAnimation.pause();
-            ringAnimation.currentTime = engaged ? ringAnimation.effect.getTiming().duration : 0;
+            ring.pause();
+            ring.currentTime = engaged ? ring.effect.getTiming().duration : 0;
             return;
           }
 
           if (engaged) {
-            ringAnimation.play();
+            ring.play();
           } else {
-            ringAnimation.reverse();
+            ring.reverse();
           }
         };
 
@@ -225,6 +234,19 @@
             setMode(!desiredEngaged);
           });
         });
+
+        // Paint the static page first, then let the orbits and pulse start.
+        const startMotion = () => {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => document.documentElement.classList.add('motion'));
+          });
+        };
+
+        if (document.readyState === 'complete') {
+          startMotion();
+        } else {
+          window.addEventListener('load', startMotion, { once: true });
+        }
 
       })();
     </script>

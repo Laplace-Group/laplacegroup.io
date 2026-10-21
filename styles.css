@@ -270,6 +270,7 @@ a {
   position: absolute;
   border: 1px solid var(--line);
   border-radius: 50%;
+  transform: rotate(var(--orbit-start));
   transition: border-color 500ms ease;
 }
 
@@ -282,7 +283,7 @@ a {
 
 .orbit-outer {
   inset: 0;
-  animation: spin var(--orbit-1) linear infinite;
+  --orbit-start: 38deg;
 }
 
 .orbit-outer span {
@@ -295,7 +296,7 @@ a {
 
 .orbit-middle {
   inset: 13.5%;
-  animation: spin var(--orbit-2) linear infinite reverse;
+  --orbit-start: -112deg;
 }
 
 .orbit-middle span {
@@ -307,7 +308,7 @@ a {
 
 .orbit-inner {
   inset: 27%;
-  animation: spin var(--orbit-3) linear infinite;
+  --orbit-start: 196deg;
 }
 
 .orbit-inner span {
@@ -327,7 +328,6 @@ a {
   border: 0;
   background: transparent;
   cursor: pointer;
-  animation: pulse var(--pulse) ease-in-out infinite;
 }
 
 .hex-mark {
@@ -433,14 +433,31 @@ a {
   text-decoration: none;
 }
 
+/* Motion starts only after the static page has painted (see index.html). */
+.motion .orbit-outer {
+  animation: spin var(--orbit-1) linear infinite;
+}
+
+.motion .orbit-middle {
+  animation: spin var(--orbit-2) linear infinite reverse;
+}
+
+.motion .orbit-inner {
+  animation: spin var(--orbit-3) linear infinite;
+}
+
+.motion .logo-core {
+  animation: pulse var(--pulse) ease-in-out infinite;
+}
+
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from { transform: rotate(var(--orbit-start)); }
+  to { transform: rotate(calc(var(--orbit-start) + 360deg)); }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 0.86; }
-  50% { opacity: 1; }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.86; }
 }
 
 a:focus-visible,
@@ -464,8 +481,11 @@ button:focus-visible {
 }
 
 @media (max-width: 860px) {
+  /* Rotating orbit boxes extend past the viewport; clip only the x-axis. */
   .site-shell {
-    overflow: visible;
+    overflow-x: hidden;
+    overflow-x: clip;
+    overflow-y: visible;
   }
 
   .grid-fade {
