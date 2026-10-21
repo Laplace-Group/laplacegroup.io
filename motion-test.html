@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Laplace Group</title>
+    <meta name="description" content="Laplace Group.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="/motion-test.css">
+    <meta property="og:title" content="Laplace Group">
+    <meta property="og:description" content="Laplace Group">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://laplacegroup.io/">
+    <meta property="og:site_name" content="Laplace Group">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Laplace Group">
+    <meta name="twitter:description" content="Laplace Group">
+  </head>
+  <body class="landing-page" data-mode="unicorn">
+    <div class="site-shell">
+      <div class="technical-grid" aria-hidden="true"></div>
+      <div class="grid-fade" aria-hidden="true"></div>
+
+      <header class="site-header">
+        <nav class="header-actions" aria-label="Primary navigation">
+          <button class="outline-action mode-toggle" type="button" data-ntd-toggle aria-pressed="false">
+            <span class="ntd-label">
+              NT-D<span class="ntd-state" aria-hidden="true"><span class="ntd-separator">&nbsp;·&nbsp;</span><span class="ntd-decrypt" data-decrypt="Engaged">Engaged</span></span>
+            </span>
+          </button>
+        </nav>
+      </header>
+
+      <main class="landing-main">
+        <section class="hero-copy" aria-labelledby="hero-title">
+          <h1 id="hero-title">Laplace Group</h1>
+
+          <a class="primary-action" href="mailto:hello@laplacegroup.io">Contact</a>
+        </section>
+
+        <section class="orrery" aria-label="Laplace orbital diagram">
+          <div class="orbit orbit-outer" aria-hidden="true"><span></span></div>
+          <div class="orbit orbit-middle" aria-hidden="true"><span></span></div>
+          <div class="orbit orbit-inner" aria-hidden="true"><span></span></div>
+
+          <button class="logo-core" type="button" data-ntd-toggle aria-label="Toggle NT-D display mode" aria-pressed="false">
+            <svg class="hex-mark" viewBox="0 0 240 240" aria-hidden="true" focusable="false">
+              <polygon class="hex-mark-frame" points="120,15 211,68 211,172 120,225 29,172 29,68"></polygon>
+              <polygon class="hex-mark-core" points="120,75 159,98 159,142 120,165 81,142 81,98"></polygon>
+            </svg>
+          </button>
+
+          <span class="annotation annotation-top">Mécanique céleste · 1799</span>
+          <span class="annotation annotation-equation">∇²V = 0</span>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>
+          © 2026 Laplace Group. All rights reserved. ·
+          <a href="/privacy.html">Privacy policy</a>
+        </span>
+        <span class="footer-code">AD 1814</span>
+      </footer>
+    </div>
+
+    <script>
+      (() => {
+        const toggles = document.querySelectorAll('[data-ntd-toggle]');
+        const engagedWord = document.querySelector('.ntd-decrypt');
+        const hexFrame = document.querySelector('.hex-mark-frame');
+        const finalText = engagedWord.dataset.decrypt;
+        const glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉ零壱弐参伍陸漆捌玖界無電脳0123456789∆∇Ξλψ';
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        let decryptFrame = 0;
+        let decryptProgress = 0;
+        let decryptDirection = 0;
+        let previousFrameTime = 0;
+        let previousGlyphTime = 0;
+        let desiredEngaged = false;
+
+        const stagger = 39;
+        const scrambleTime = 215;
+        const tickRate = 21;
+        const decryptDuration = (finalText.length - 1) * stagger + scrambleTime;
+        // Created on first toggle so the page paints with no animation running.
+        let ringAnimation = null;
+        const getRingAnimation = () => {
+          if (!ringAnimation && typeof hexFrame.animate === 'function') {
+            ringAnimation = hexFrame.animate(
+              [
+                { transform: 'rotate(0deg)' },
+                { transform: 'rotate(-360deg)' }
+              ],
+              {
+                duration: 720,
+                easing: 'ease-in-out',
+                fill: 'both'
+              }
+            );
+            ringAnimation.pause();
+            ringAnimation.currentTime = 0;
+          }
+          return ringAnimation;
+        };
+
+        const randomGlyph = () => glyphs[Math.floor(Math.random() * glyphs.length)];
+
+        const buildEngagedWord = () => {
+          const fragment = document.createDocumentFragment();
+          const characters = [];
+
+          [...finalText].forEach((character) => {
+            const characterElement = document.createElement('span');
+            characterElement.className = 'ntd-decrypt-char';
+            characterElement.dataset.character = character;
+            characterElement.dataset.phase = 'hidden';
+            characterElement.dataset.resolved = 'false';
+            characterElement.textContent = '';
+            fragment.append(characterElement);
+            characters.push(characterElement);
+          });
+
+          engagedWord.replaceChildren(fragment);
+          return characters;
+        };
+
+        const characters = buildEngagedWord();
+
+        const renderEngaged = (refreshGlyphs = false) => {
+          const elapsed = decryptProgress * decryptDuration;
+
+          characters.forEach((character, index) => {
+            const localTime = elapsed - index * stagger;
+
+            if (localTime <= 0) {
+              character.textContent = '';
+              character.dataset.phase = 'hidden';
+              character.dataset.resolved = 'false';
+              return;
+            }
+
+            if (localTime < scrambleTime) {
+              if (refreshGlyphs || character.dataset.phase !== 'scramble') {
+                character.textContent = randomGlyph();
+              }
+              character.dataset.phase = 'scramble';
+              character.dataset.resolved = 'false';
+              return;
+            }
+
+            character.textContent = character.dataset.character;
+            character.dataset.phase = 'resolved';
+            character.dataset.resolved = 'true';
+          });
+        };
+
+        const animateEngaged = (now) => {
+          const delta = previousFrameTime ? now - previousFrameTime : 0;
+          previousFrameTime = now;
+          decryptProgress = Math.min(1, Math.max(0, decryptProgress + decryptDirection * delta / decryptDuration));
+
+          const refreshGlyphs = now - previousGlyphTime >= tickRate;
+          renderEngaged(refreshGlyphs);
+          if (refreshGlyphs) previousGlyphTime = now;
+
+          if ((decryptDirection > 0 && decryptProgress >= 1) ||
+              (decryptDirection < 0 && decryptProgress <= 0)) {
+            decryptDirection = 0;
+
+            if (decryptProgress === 0 && !desiredEngaged) {
+              document.body.dataset.mode = 'unicorn';
+              setPressed(false);
+            }
+            return;
+          }
+
+          decryptFrame = requestAnimationFrame(animateEngaged);
+        };
+
+        const setPressed = (pressed) => {
+          toggles.forEach((toggle) => toggle.setAttribute('aria-pressed', String(pressed)));
+        };
+
+        const spinRing = (engaged) => {
+          const ring = getRingAnimation();
+          if (!ring) return;
+
+          if (reducedMotion.matches) {
+            ring.pause();
+            ring.currentTime = engaged ? ring.effect.getTiming().duration : 0;
+            return;
+          }
+
+          if (engaged) {
+            ring.play();
+          } else {
+            ring.reverse();
+          }
+        };
+
+        const setMode = (engaged) => {
+          desiredEngaged = engaged;
+          spinRing(engaged);
+          cancelAnimationFrame(decryptFrame);
+
+          if (engaged) {
+            document.body.dataset.mode = 'ntd';
+            setPressed(true);
+            decryptDirection = 1;
+          } else {
+            if (reducedMotion.matches) {
+              decryptProgress = 0;
+              renderEngaged();
+              setPressed(false);
+              document.body.dataset.mode = 'unicorn';
+              return;
+            }
+            decryptDirection = -1;
+          }
+
+          if (reducedMotion.matches) {
+            decryptProgress = engaged ? 1 : 0;
+            renderEngaged();
+            return;
+          }
+
+          previousFrameTime = performance.now();
+          decryptFrame = requestAnimationFrame(animateEngaged);
+        };
+
+        toggles.forEach((toggle) => {
+          toggle.addEventListener('click', () => {
+            setMode(!desiredEngaged);
+          });
+        });
+
+        // Paint the static page first, then let the orbits and pulse start.
+        const startMotion = () => {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => document.documentElement.classList.add('motion'));
+          });
+        };
+
+        if (document.readyState === 'complete') {
+          startMotion();
+        } else {
+          window.addEventListener('load', startMotion, { once: true });
+        }
+
+      })();
+    </script>
+  </body>
+</html>
