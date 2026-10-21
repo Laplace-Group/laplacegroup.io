@@ -481,8 +481,11 @@ button:focus-visible {
 }
 
 @media (max-width: 860px) {
+  /* Rotating orbit boxes extend past the viewport; clip only the x-axis. */
   .site-shell {
-    overflow: visible;
+    overflow-x: hidden;
+    overflow-x: clip;
+    overflow-y: visible;
   }
 
   .grid-fade {
